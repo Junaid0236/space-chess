@@ -372,7 +372,7 @@ body, html {
 @media (max-width: 900px) { #board-area { min-height: 60vh; padding: 40px 0; } }
 #board-container {
     position: relative; transform-style: preserve-3d; 
-    transform: rotateX(var(--board-rot-x, 25deg)) rotateZ(var(--board-rot-z, 0deg));
+    transform: rotateX(var(--board-rot-x, 0deg)) rotateZ(var(--board-rot-z, 0deg));
     box-shadow: var(--board-shadow);
     border: 3px solid var(--glow-cyan); border-radius: 4px; background: rgba(0, 0, 0, 0.5);
     transition: transform 0.1s linear, box-shadow 0.5s ease, border-color 0.5s ease;
@@ -845,11 +845,6 @@ let pieceIdCounter = 0;
 let pieceElements = new Map(); // id -> DOM element
 let boardState = new Array(64).fill(null); // Each entry: { type, color, id }
 
-// Camera Tracking
-let isDraggingCamera = false;
-let startX, startY;
-let boardRotX = 25, boardRotZ = 0;
-
 function syncBoardWithEngine() {
     for(let i=0; i<64; i++) {
         const enginePiece = engine.board[i];
@@ -895,7 +890,7 @@ function setMode(mode) {
         document.getElementById('online-status').style.display = 'none';
         if(peer) { peer.destroy(); peer = null; }
         if(conn) { conn.close(); conn = null; }
-        document.getElementById('board-container').style.transform = 'rotateX(25deg)';
+        document.getElementById('board-container').style.transform = 'rotateX(0deg)';
         document.querySelector(':root').style.setProperty('--piece-rot', 'none');
     }
 }
@@ -947,7 +942,7 @@ function joinOnlineMatch(roomId) {
 }
 function setupConnectionCallbacks() {
     const isBlack = playerColor === 'b';
-    document.getElementById('board-container').style.transform = isBlack ? 'rotateX(25deg) rotateZ(180deg)' : 'rotateX(25deg)';
+    document.getElementById('board-container').style.transform = isBlack ? 'rotateX(0deg) rotateZ(180deg)' : 'rotateX(0deg)';
     document.querySelector(':root').style.setProperty('--piece-rot', isBlack ? 'rotateZ(180deg)' : 'none');
     conn.on('data', (data) => {
         if(data.type === 'init') {
@@ -1263,29 +1258,7 @@ document.getElementById('new-game-btn').onclick = () => {
     audio.playStart(); initRender(); resizeCanvas(); animateParticles();
 };
 
-// --- Camera Interaction ---
-const boardArea = document.getElementById('board-area');
-boardArea.onpointerdown = (e) => {
-    if(e.target.closest('.piece') && e.button === 0) return; // Ignore drag/clicks starting on pieces
-    if(e.button !== 0 && e.button !== 2 && e.pointerType === 'mouse') return;
-    isDraggingCamera = true;
-    startX = e.clientX;
-    startY = e.clientY;
-};
-window.addEventListener('pointermove', (e) => {
-    if(!isDraggingCamera) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-    boardRotZ += dx * 0.5;
-    boardRotX -= dy * 0.5;
-    boardRotX = Math.max(0, Math.min(80, boardRotX));
-    startX = e.clientX;
-    startY = e.clientY;
-    document.documentElement.style.setProperty('--board-rot-x', `${boardRotX}deg`);
-    document.documentElement.style.setProperty('--board-rot-z', `${boardRotZ}deg`);
-});
-window.addEventListener('pointerup', () => { isDraggingCamera = false; });
-boardArea.oncontextmenu = (e) => { e.preventDefault(); };
+// --- End ---
 
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
