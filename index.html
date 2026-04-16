@@ -1028,22 +1028,33 @@ function updateBoard() {
                 pEl.className = `piece ${p.color === 'w' ? 'white' : 'black'}`;
                 pEl.innerText = PIECES[p.color + p.type];
                 pEl.draggable = true;
-                pEl.ondragstart = (e) => {
-                    if(isAITurn || (isOnline && playerColor !== 'both' && engine.turn !== playerColor)) {
-                        e.preventDefault();
-                        return;
-                    }
-                    if(engine.board[i] && engine.board[i].color === engine.turn) {
-                        e.dataTransfer.setData('text/plain', i);
-                        selectedSquare = i;
-                        updateBoard();
-                    } else {
-                        e.preventDefault();
-                    }
-                };
                 pieceElements.set(p.id, pEl);
                 boardEl.appendChild(pEl);
             }
+            
+            pEl.onclick = () => onSquareClick(i);
+            pEl.ondragover = (e) => { e.preventDefault(); };
+            pEl.ondrop = (e) => {
+                e.preventDefault();
+                const from = parseInt(e.dataTransfer.getData('text/plain'));
+                const moves = legalMoves.filter(m => m.from === from);
+                const validMove = moves.find(m => m.to === i);
+                if(validMove) executeMove(validMove);
+                else { selectedSquare = null; updateBoard(); }
+            };
+            pEl.ondragstart = (e) => {
+                if(isAITurn || (isOnline && playerColor !== 'both' && engine.turn !== playerColor)) {
+                    e.preventDefault();
+                    return;
+                }
+                if(engine.board[i] && engine.board[i].color === engine.turn) {
+                    e.dataTransfer.setData('text/plain', i);
+                    selectedSquare = i;
+                    updateBoard();
+                } else {
+                    e.preventDefault();
+                }
+            };
             
             pEl.classList.toggle('selected', i === selectedSquare);
             pEl.classList.toggle('idle', i !== selectedSquare);
@@ -1255,13 +1266,13 @@ document.getElementById('new-game-btn').onclick = () => {
 // --- Camera Interaction ---
 const boardArea = document.getElementById('board-area');
 boardArea.onpointerdown = (e) => {
-    if(e.button !== 0 && e.pointerType === 'mouse') return;
+    if(e.target.closest('.piece') && e.button === 0) return; // Ignore drag/clicks starting on pieces
+    if(e.button !== 0 && e.button !== 2 && e.pointerType === 'mouse') return;
     isDraggingCamera = true;
     startX = e.clientX;
     startY = e.clientY;
-    boardArea.setPointerCapture(e.pointerId);
 };
-boardArea.onpointermove = (e) => {
+window.addEventListener('pointermove', (e) => {
     if(!isDraggingCamera) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
@@ -1272,11 +1283,9 @@ boardArea.onpointermove = (e) => {
     startY = e.clientY;
     document.documentElement.style.setProperty('--board-rot-x', `${boardRotX}deg`);
     document.documentElement.style.setProperty('--board-rot-z', `${boardRotZ}deg`);
-};
-boardArea.onpointerup = (e) => {
-    isDraggingCamera = false;
-    boardArea.releasePointerCapture(e.pointerId);
-};
+});
+window.addEventListener('pointerup', () => { isDraggingCamera = false; });
+boardArea.oncontextmenu = (e) => { e.preventDefault(); };
 
 window.onload = () => {
     const urlParams = new URLSearchParams(window.location.search);
