@@ -251,6 +251,82 @@
   --dot-opacity: 1;
 }
 
+/* ================== 3D EXTRUDED THEMES ================== */
+[data-theme="3d_voxel"] {
+  --bg-color: #2b2b2b;
+  --board-dark: #cc563d;
+  --board-light: #f5b087;
+  --glow-cyan: #ffba08;
+  --glow-purple: #2b2b2b;
+  --piece-white: #ffffff;
+  --piece-black: #111111;
+  --text-color: #ffffff;
+  --btn-text: #ffffff;
+  --piece-shadow-w: 0 1px 0 #ddd, 0 2px 0 #ccc, 0 3px 0 #bbb, 0 4px 0 #aaa, 0 5px 0 #999, 0 6px 1px rgba(0,0,0,.6), 0 15px 15px rgba(0,0,0,.4);
+  --piece-shadow-b: 0 1px 0 #222, 0 2px 0 #1a1a1a, 0 3px 0 #111, 0 4px 0 #0a0a0a, 0 5px 0 #000, 0 6px 1px rgba(0,0,0,.8), 0 15px 15px rgba(0,0,0,.6);
+  --board-shadow: 0 5px 0px #8b3a2a, 0 10px 0px #6a2c20, 0 15px 0px #4d2017, 0 25px 40px rgba(0,0,0,0.8);
+  --star-opacity: 0;
+  --panel-bg: #1c1c1c;
+  --info-bg: #2b2b2b;
+  --h1-shadow: 0 2px 0 #888, 0 4px 0 #444, 0 6px 10px rgba(0,0,0,0.5);
+  --btn-glow: none;
+  --dot-bg: rgba(0,0,0,0.4);
+  --dot-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+  --dot-anim: none;
+  --dot-opacity: 1;
+  --sq-shadow: inset -3px -3px 5px rgba(0,0,0,0.4), inset 3px 3px 5px rgba(255,255,255,0.4);
+}
+
+[data-theme="3d_glass"] {
+  --bg-color: #0d1b2a;
+  --board-dark: rgba(255,255,255,0.1);
+  --board-light: rgba(255,255,255,0.3);
+  --glow-cyan: #00e5ff;
+  --glow-purple: #ffffff;
+  --piece-white: #e0fbfc;
+  --piece-black: #1d3557;
+  --text-color: #e0fbfc;
+  --btn-text: #0d1b2a;
+  --piece-shadow-w: 0 1px 0 rgba(255,255,255,0.6), 0 2px 0 rgba(255,255,255,0.5), 0 10px 20px rgba(0,229,255,0.8);
+  --piece-shadow-b: 0 1px 0 rgba(29,53,87,0.8), 0 2px 0 rgba(29,53,87,0.6), 0 10px 20px rgba(0,0,0,0.8);
+  --board-shadow: 0 5px 0 rgba(255,255,255,0.2), 0 15px 30px rgba(0,229,255,0.5), inset 0 0 20px rgba(255,255,255,0.2);
+  --star-opacity: 0.5;
+  --panel-bg: rgba(13,27,42,0.8);
+  --info-bg: rgba(27,38,59,0.8);
+  --h1-shadow: 0 2px 0 #1d3557, 0 5px 15px rgba(0,229,255,0.6);
+  --btn-glow: 0 5px 15px rgba(0,229,255,0.4);
+  --dot-bg: #00e5ff;
+  --dot-shadow: 0 5px 15px rgba(0,229,255,0.6);
+  --dot-anim: pulseOrb 1.5s infinite alternate;
+  --dot-opacity: 0.7;
+  --sq-shadow: inset 0 0 10px rgba(255,255,255,0.2), 0 0 2px rgba(255,255,255,0.3);
+}
+
+[data-theme="3d_neon_city"] {
+  --bg-color: #050014;
+  --board-dark: #12003b;
+  --board-light: #2b00ff;
+  --glow-cyan: #ff0055;
+  --glow-purple: #bb00ff;
+  --piece-white: #ffffff;
+  --piece-black: #ff0055;
+  --text-color: #00ffff;
+  --btn-text: #ffffff;
+  --piece-shadow-w: 0 1px 0 #ddd, 0 2px 0 #bbb, 0 3px 0 #999, 0 4px 0 #666, 0 8px 10px rgba(0,255,255,0.8);
+  --piece-shadow-b: 0 1px 0 #cc0044, 0 2px 0 #990033, 0 3px 0 #660022, 0 4px 0 #330011, 0 8px 10px rgba(255,0,85,0.8);
+  --board-shadow: 0 5px 0px #1e0066, 0 10px 0px #12003b, 0 25px 50px rgba(187,0,255,0.6), inset 0 0 15px rgba(0,255,255,0.5);
+  --star-opacity: 1;
+  --panel-bg: rgba(5,0,20,0.9);
+  --info-bg: rgba(20,0,50,0.8);
+  --h1-shadow: 0 2px 0 #bb00ff, 0 6px 15px rgba(0,255,255,0.6);
+  --btn-glow: 0 5px 15px rgba(255,0,85,0.5);
+  --dot-bg: #00ffff;
+  --dot-shadow: 0 5px 15px rgba(0,255,255,0.8);
+  --dot-anim: pulseOrb 1.5s infinite alternate;
+  --dot-opacity: 0.8;
+  --sq-shadow: inset 0 0 10px rgba(0,0,0,0.8), inset 0 0 2px var(--glow-cyan);
+}
+
 body, html { 
     margin: 0; padding: 0; height: 100vh; 
     font-family: 'Share Tech Mono', monospace; 
@@ -301,7 +377,7 @@ body, html {
 }
 
 #board { display: grid; grid-template-columns: repeat(8, var(--sq-size)); grid-template-rows: repeat(8, var(--sq-size)); width: calc(var(--sq-size) * 8); height: calc(var(--sq-size) * 8); }
-.square { width: var(--sq-size); height: var(--sq-size); display: flex; justify-content: center; align-items: center; position: relative; transition: background-color 0.5s ease; }
+.square { width: var(--sq-size); height: var(--sq-size); display: flex; justify-content: center; align-items: center; position: relative; transition: background-color 0.5s ease; box-shadow: var(--sq-shadow, none); }
 .sq-dark { background-color: var(--board-dark); }
 .sq-light { background-color: var(--board-light); }
 
@@ -449,6 +525,11 @@ select { outline: none; }
                     <option value="wood">Traditional Wood</option>
                     <option value="emerald">Emerald Board</option>
                     <option value="monochrome">Monochrome</option>
+                </optgroup>
+                <optgroup label="3D Extrusions">
+                    <option value="3d_voxel">Voxel Wood 3D (Thick)</option>
+                    <option value="3d_glass">Glass Cube 3D (Beveled)</option>
+                    <option value="3d_neon_city">Neon Metropolis 3D (Heavy Extrusion)</option>
                 </optgroup>
             </select>
         </div>
