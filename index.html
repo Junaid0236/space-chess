@@ -6,6 +6,7 @@
 <title>Antigravity Space Chess</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stockfish.js/10.0.2/stockfish.js"></script>
 <style>
 /* ================== NEON SCIFI THEMES ================== */
 :root, [data-theme="neon"] {
@@ -370,21 +371,32 @@ body, html {
 #board-area { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 1200px; position: relative; width: 100%; transition: all 0.5s ease; z-index: 5; }
 @media (max-width: 900px) { #board-area { min-height: 60vh; padding: 40px 0; } }
 #board-container {
-    position: relative; transform-style: preserve-3d; transform: rotateX(25deg);
+    position: relative; transform-style: preserve-3d; 
+    transform: rotateX(var(--board-rot-x, 25deg)) rotateZ(var(--board-rot-z, 0deg));
     box-shadow: var(--board-shadow);
     border: 3px solid var(--glow-cyan); border-radius: 4px; background: rgba(0, 0, 0, 0.5);
-    transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55), box-shadow 0.5s ease, border-color 0.5s ease;
+    transition: transform 0.1s linear, box-shadow 0.5s ease, border-color 0.5s ease;
 }
 
-#board { display: grid; grid-template-columns: repeat(8, var(--sq-size)); grid-template-rows: repeat(8, var(--sq-size)); width: calc(var(--sq-size) * 8); height: calc(var(--sq-size) * 8); }
+#board { 
+    position: relative;
+    display: grid; grid-template-columns: repeat(8, var(--sq-size)); grid-template-rows: repeat(8, var(--sq-size)); 
+    width: calc(var(--sq-size) * 8); height: calc(var(--sq-size) * 8); 
+}
 .square { width: var(--sq-size); height: var(--sq-size); display: flex; justify-content: center; align-items: center; position: relative; transition: background-color 0.5s ease; box-shadow: var(--sq-shadow, none); }
 .sq-dark { background-color: var(--board-dark); }
 .sq-light { background-color: var(--board-light); }
 
 /* Pieces */
 .piece { 
+    position: absolute;
+    width: var(--sq-size); height: var(--sq-size);
+    display: flex; justify-content: center; align-items: center;
     font-size: calc(var(--sq-size) * 0.7); cursor: pointer; user-select: none; 
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.5s, text-shadow 0.5s; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                color 0.5s, text-shadow 0.5s,
+                left 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                top 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 10; line-height: 1; transform: var(--piece-rot); 
 }
 .piece.white { color: var(--piece-white); text-shadow: var(--piece-shadow-w); }
@@ -540,6 +552,17 @@ select { outline: none; }
         <div class="info-box">
             <div id="status-turn">Turn: White</div>
             <div id="status-msg"></div>
+            
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <div style="flex: 1; text-align: center; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="font-size: 0.7em; opacity: 0.6;">WHITE</div>
+                    <div id="clock-w" style="font-size: 1.4em; font-family: 'Share Tech Mono', monospace; color: var(--glow-cyan);">10:00</div>
+                </div>
+                <div style="flex: 1; text-align: center; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 4px; border: 1px solid rgba(0,0,0,0.3);">
+                    <div style="font-size: 0.7em; opacity: 0.6;">BLACK</div>
+                    <div id="clock-b" style="font-size: 1.4em; font-family: 'Share Tech Mono', monospace; color: var(--piece-black);">10:00</div>
+                </div>
+            </div>
         </div>
         
         <div class="info-box" style="padding: 15px;">
@@ -780,6 +803,72 @@ let isAITurn = false;
 let isOnline = false;
 let peer = null; let conn = null; let playerColor = 'both'; 
 
+// Clock Logic
+let timers = { w: 600, b: 600 }; // seconds (10 mins)
+let clockInterval = null;
+const INITIAL_TIME = 600;
+
+function formatTime(s) {
+    const mins = Math.floor(s / 60);
+    const secs = s % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+function updateClockUI() {
+    document.getElementById('clock-w').innerText = formatTime(timers.w);
+    document.getElementById('clock-b').innerText = formatTime(timers.b);
+}
+
+function startClocks() {
+    if(clockInterval) clearInterval(clockInterval);
+    clockInterval = setInterval(() => {
+        if(engine.fullMoves === 1 && engine.turn === 'w' && timers.w === INITIAL_TIME) return; // Haven't started first move
+        
+        timers[engine.turn]--;
+        if(timers[engine.turn] <= 0) {
+            timers[engine.turn] = 0;
+            clearInterval(clockInterval);
+            showResultModal("TIMEOUT", `${engine.turn === 'w' ? 'Black' : 'White'} wins on time!`);
+        }
+        updateClockUI();
+    }, 1000);
+}
+
+function resetClocks() {
+    if(clockInterval) clearInterval(clockInterval);
+    timers = { w: INITIAL_TIME, b: INITIAL_TIME };
+    updateClockUI();
+}
+
+// Persistent Piece Tracking
+let pieceIdCounter = 0;
+let pieceElements = new Map(); // id -> DOM element
+let boardState = new Array(64).fill(null); // Each entry: { type, color, id }
+
+// Camera Tracking
+let isDraggingCamera = false;
+let startX, startY;
+let boardRotX = 25, boardRotZ = 0;
+
+function syncBoardWithEngine() {
+    for(let i=0; i<64; i++) {
+        const enginePiece = engine.board[i];
+        if(!enginePiece) {
+            boardState[i] = null;
+        } else {
+            // If piece already matches what we have, keep it
+            if(boardState[i] && boardState[i].type === enginePiece.type && boardState[i].color === enginePiece.color) {
+                continue;
+            }
+            // Otherwise, we need to find it or create it
+            // Simple approach: if engine has a piece but boardState[i] is different, something changed.
+            // For now, let's just assign IDs based on FEN loading.
+            boardState[i] = { ...enginePiece, id: `p-${pieceIdCounter++}` };
+        }
+    }
+}
+syncBoardWithEngine();
+
 // Themes
 document.getElementById('theme-selector').onchange = (e) => {
     document.body.setAttribute('data-theme', e.target.value);
@@ -825,8 +914,26 @@ function hostOnlineMatch() {
     peer.on('connection', (c) => {
         conn = c; setupConnectionCallbacks();
         statusEl.innerText = 'OPPONENT CONNECTED! You are Playing White.';
-        conn.send({ type: 'init', fen: START_FEN });
+        conn.send({ type: 'init', fen: engineToFen(), timers: timers });
     });
+}
+function engineToFen() {
+    let fen = "";
+    for(let r=0; r<8; r++) {
+        let empty = 0;
+        for(let c=0; c<8; c++) {
+            const p = engine.board[r*8+c];
+            if(!p) empty++;
+            else {
+                if(empty > 0) { fen += empty; empty = 0; }
+                const char = p.type === 'N' ? 'N' : p.type;
+                fen += (p.color === 'w' ? char.toUpperCase() : char.toLowerCase());
+            }
+        }
+        if(empty > 0) fen += empty;
+        if(r < 7) fen += "/";
+    }
+    return fen;
 }
 function joinOnlineMatch(roomId) {
     isOnline = true; playerColor = 'b'; setMode('Online');
@@ -845,8 +952,13 @@ function setupConnectionCallbacks() {
     conn.on('data', (data) => {
         if(data.type === 'init') {
             engine.loadFEN(data.fen); document.getElementById('move-log').innerHTML = ''; 
-            engine.fullMoves = 0; legalMoves = engine.getLegalMoves(); updateBoard();
-        } else if(data.type === 'move') { executeMove(data.move, true); }
+            engine.fullMoves = 0; legalMoves = engine.getLegalMoves(); 
+            if(data.timers) { timers = data.timers; updateClockUI(); }
+            updateBoard();
+        } else if(data.type === 'move') { 
+            if(data.timers) { timers = data.timers; updateClockUI(); }
+            executeMove(data.move, true); 
+        }
     });
     conn.on('close', () => { document.getElementById('online-status').innerText = 'OPPONENT DISCONNECTED.'; });
 }
@@ -857,7 +969,19 @@ function initRender() {
     for(let i=0; i<64; i++) {
         const sq = document.createElement('div'); const r = Math.floor(i / 8), c = i % 8;
         sq.className = `square ${ (r+c)%2===0 ? 'sq-light' : 'sq-dark' }`;
-        sq.dataset.index = i; sq.onclick = () => onSquareClick(i);
+        sq.dataset.index = i; 
+        sq.onclick = () => onSquareClick(i);
+        
+        sq.ondragover = (e) => { e.preventDefault(); };
+        sq.ondrop = (e) => {
+            e.preventDefault();
+            const from = parseInt(e.dataTransfer.getData('text/plain'));
+            const moves = legalMoves.filter(m => m.from === from);
+            const validMove = moves.find(m => m.to === i);
+            if(validMove) executeMove(validMove);
+            else { selectedSquare = null; updateBoard(); }
+        };
+        
         boardEl.appendChild(sq);
     }
     updateBoard();
@@ -865,20 +989,81 @@ function initRender() {
 
 function updateBoard() {
     const squares = boardEl.querySelectorAll('.square');
-    squares.forEach(sq => { sq.innerHTML = ''; sq.classList.remove('valid-move', 'check'); });
+    squares.forEach(sq => { sq.classList.remove('valid-move', 'check'); });
 
+    // 1. Synchronize Logical Board vs Engine
+    // Detect moves to maintain persistent piece IDs
+    const newBoard = new Array(64).fill(null);
     for(let i=0; i<64; i++) {
-        const piece = engine.board[i];
-        if(piece) {
-            const pEl = document.createElement('div');
-            pEl.className = `piece ${piece.color === 'w' ? 'white' : 'black'} idle`;
-            pEl.innerText = PIECES[piece.color + piece.type];
-            if(i === selectedSquare) { pEl.classList.remove('idle'); pEl.classList.add('selected'); }
-            squares[i].appendChild(pEl);
-            if(piece.type === 'K' && engine.inCheck(piece.color)) squares[i].classList.add('check');
+        const enginePiece = engine.board[i];
+        if(enginePiece) {
+            // Try to find if this piece was at boardState[i]
+            if(boardState[i] && boardState[i].type === enginePiece.type && boardState[i].color === enginePiece.color) {
+                newBoard[i] = boardState[i];
+            } else {
+                // Was it moved from somewhere else?
+                // This is a simple heuristic: if a piece of same type/color is missing from its old spot, it might be this one.
+                // However, for multiple pawns this is hard.
+                // Better: during executeMove, we update boardState manually.
+                newBoard[i] = { ...enginePiece, id: `p-${pieceIdCounter++}` };
+            }
         }
     }
-    if(selectedSquare !== null) { legalMoves.filter(m => m.from === selectedSquare).forEach(m => squares[m.to].classList.add('valid-move') ); }
+    // (Note: we bypass the heuristic and just update boardState in executeMove for precision)
+
+    // 2. Clear old highlights
+    if(selectedSquare !== null) { 
+        legalMoves.filter(m => m.from === selectedSquare).forEach(m => squares[m.to].classList.add('valid-move') ); 
+    }
+
+    // 3. Update DOM pieces
+    const currentPieceIds = new Set();
+    for(let i=0; i<64; i++) {
+        const p = boardState[i];
+        if(p) {
+            currentPieceIds.add(p.id);
+            let pEl = pieceElements.get(p.id);
+            if(!pEl) {
+                pEl = document.createElement('div');
+                pEl.className = `piece ${p.color === 'w' ? 'white' : 'black'}`;
+                pEl.innerText = PIECES[p.color + p.type];
+                pEl.draggable = true;
+                pEl.ondragstart = (e) => {
+                    if(isAITurn || (isOnline && playerColor !== 'both' && engine.turn !== playerColor)) {
+                        e.preventDefault();
+                        return;
+                    }
+                    if(engine.board[i] && engine.board[i].color === engine.turn) {
+                        e.dataTransfer.setData('text/plain', i);
+                        selectedSquare = i;
+                        updateBoard();
+                    } else {
+                        e.preventDefault();
+                    }
+                };
+                pieceElements.set(p.id, pEl);
+                boardEl.appendChild(pEl);
+            }
+            
+            pEl.classList.toggle('selected', i === selectedSquare);
+            pEl.classList.toggle('idle', i !== selectedSquare);
+            
+            if(p.type === 'K' && engine.inCheck(p.color)) squares[i].classList.add('check');
+            
+            // Set position
+            const r = Math.floor(i/8), c = i%8;
+            pEl.style.left = `calc(${c} * var(--sq-size))`;
+            pEl.style.top = `calc(${r} * var(--sq-size))`;
+        }
+    }
+
+    // 4. Remove old piece elements
+    for(const [id, el] of pieceElements.entries()) {
+        if(!currentPieceIds.has(id)) {
+            el.remove();
+            pieceElements.delete(id);
+        }
+    }
 
     let teamStr = engine.turn === 'w' ? 'White' : 'Black';
     document.getElementById('status-turn').innerText = `Turn: ${teamStr}`;
@@ -916,10 +1101,36 @@ function onSquareClick(i) {
 }
 
 function executeMove(validMove, fromNetwork = false) {
-    const i = validMove.to; const san = engine.moveToSan(validMove); const captured = engine.makeMove(validMove);
+    const from = validMove.from;
+    const to = validMove.to;
+    const piece = boardState[from];
+    const san = engine.moveToSan(validMove); 
+    const captured = engine.makeMove(validMove);
     
+    // Update local piece board tracking to maintain IDs
+    if(validMove.type === 'ep') {
+        const dir = piece.color === 'w' ? 1 : -1;
+        boardState[to + (dir*8)] = null;
+    }
+    if(validMove.type === 'castle') {
+        if(to % 8 === 6) { // Kingside
+            const rook = boardState[to + 1];
+            boardState[to - 1] = rook;
+            boardState[to + 1] = null;
+        } else { // Queenside
+            const rook = boardState[to - 2];
+            boardState[to + 1] = rook;
+            boardState[to - 2] = null;
+        }
+    }
+    
+    // Promotion check (if engine promoted, we must sync the piece record)
+    const enginePiece = engine.board[to];
+    boardState[to] = { ...piece, type: enginePiece.type };
+    boardState[from] = null;
+
     if(captured) {
-        audio.playCapture(); spawnExplosion(i % 8, Math.floor(i / 8), captured.color==='w' ? '#e0e0ff' : '#ff3c5c');
+        audio.playCapture(); spawnExplosion(to % 8, Math.floor(to / 8), captured.color==='w' ? '#e0e0ff' : '#ff3c5c');
         if(captured.color === 'w') capBlackEl.innerText += PIECES['w'+captured.type];
         else capWhiteEl.innerText += PIECES['b'+captured.type];
     } else audio.playMove();
@@ -943,70 +1154,67 @@ function executeMove(validMove, fromNetwork = false) {
     
     updateBoard();
 
-    if(!fromNetwork && isOnline && conn) conn.send({ type: 'move', move: validMove });
-    if (gameMode === 'PvE' && engine.turn === 'b' && legalMoves.length > 0) makeAIMove();
+    if(!fromNetwork && isOnline && conn) conn.send({ type: 'move', move: validMove, timers: timers });
+    if (gameMode === 'PvE' && engine.turn === 'b' && legalMoves.length > 0) {
+        if(clockInterval) startClocks();
+        makeAIMove();
+    } else {
+        if(!clockInterval && !isAITurn) startClocks();
+    }
 }
 
-function minimax(depth, alpha, beta, isMaximizing) {
-    const legalMoves = engine.getLegalMoves();
-    if (depth === 0 || legalMoves.length === 0) {
-        let score = engine.evaluate();
-        if(legalMoves.length === 0) {
-            if(engine.inCheck(engine.turn)) return engine.turn==='w' ? -10000 : 10000;
-            return 0;
+// --- STOCKFISH AI ---
+let stockfish = null;
+let isStockfishReady = false;
+
+function initStockfish() {
+    try {
+        if(typeof Stockfish !== 'undefined') {
+            stockfish = Stockfish();
+            stockfish.onmessage = (event) => {
+                const line = event.data;
+                if(line === 'uciok') isStockfishReady = true;
+                if(line.startsWith('bestmove')) {
+                    const moveStr = line.split(' ')[1];
+                    const move = findMoveFromLan(moveStr);
+                    if(move) executeMove(move);
+                    isAITurn = false;
+                }
+            };
+            stockfish.postMessage('uci');
+            stockfish.postMessage('isready');
         }
-        if(engine.inCheck(engine.turn)) score += engine.turn==='w' ? -10 : 10;
-        return score;
-    }
-    if (isMaximizing) {
-        let maxEval = -Infinity;
-        for (let m of legalMoves) {
-            const state = engine.cloneState(); engine.makeMove(m);
-            const ev = minimax(depth - 1, alpha, beta, false);
-            engine.restoreState(state);
-            maxEval = Math.max(maxEval, ev); alpha = Math.max(alpha, ev);
-            if (beta <= alpha) break;
-        }
-        return maxEval;
-    } else {
-        let minEval = Infinity;
-        for (let m of legalMoves) {
-            const state = engine.cloneState(); engine.makeMove(m);
-            const ev = minimax(depth - 1, alpha, beta, true);
-            engine.restoreState(state);
-            minEval = Math.min(minEval, ev); beta = Math.min(beta, ev);
-            if (beta <= alpha) break;
-        }
-        return minEval;
-    }
+    } catch(e) { console.error("Stockfish init failed:", e); }
+}
+
+function findMoveFromLan(lan) {
+    const fromStr = lan.substring(0, 2);
+    const toStr = lan.substring(2, 4);
+    const files = 'abcdefgh';
+    const fromIdx = files.indexOf(fromStr[0]) + (8 - parseInt(fromStr[1])) * 8;
+    const toIdx = files.indexOf(toStr[0]) + (8 - parseInt(toStr[1])) * 8;
+    return legalMoves.find(m => m.from === fromIdx && m.to === toIdx);
 }
 
 function makeAIMove() {
-    isAITurn = true; document.getElementById('status-msg').innerText = 'AI Thinking...';
-    setTimeout(() => {
-        const depth = parseInt(document.getElementById('ai-difficulty').value);
-        let bestScore = engine.turn === 'w' ? -Infinity : Infinity;
-        const candidates = []; const legal = engine.getLegalMoves();
-        legal.sort((a,b) => (b.type==='capture'?1:0) - (a.type==='capture'?1:0));
-
-        for(let m of legal) {
-            const state = engine.cloneState(); engine.makeMove(m);
-            let score = minimax(depth - 1, -Infinity, Infinity, engine.turn === 'w');
-            score += Math.random() * 2 - 1; engine.restoreState(state);
-            
-            if(engine.turn === 'b') { 
-                if(score < bestScore) { bestScore = score; candidates.length = 0; candidates.push(m); }
-                else if(score === bestScore) candidates.push(m);
-            } else {
-                if(score > bestScore) { bestScore = score; candidates.length = 0; candidates.push(m); }
-                else if(score === bestScore) candidates.push(m);
-            }
-        }
-        const move = candidates[Math.floor(Math.random() * candidates.length)] || legal[0];
-        if(move) executeMove(move);
-        isAITurn = false;
-    }, 50);
+    isAITurn = true; 
+    document.getElementById('status-msg').innerText = 'AI Thinking...';
+    
+    if(stockfish) {
+        stockfish.postMessage(`position fen ${engineToFen()} ${engine.turn} - - 0 ${engine.fullMoves}`);
+        const depth = Math.min(15, parseInt(document.getElementById('ai-difficulty').value) * 4);
+        stockfish.postMessage(`go depth ${depth}`);
+    } else {
+        // Fallback to simple random if Stockfish fails
+        setTimeout(() => {
+            const move = legalMoves[Math.floor(Math.random() * legalMoves.length)];
+            if(move) executeMove(move);
+            isAITurn = false;
+        }, 500);
+    }
 }
+
+initStockfish();
 
 function logMove(san) {
     const log = document.getElementById('move-log');
@@ -1023,14 +1231,51 @@ function logMove(san) {
 
 document.getElementById('new-game-btn').onclick = () => {
     engine.loadFEN(START_FEN); engine.turn = 'w'; engine.fullMoves = 0;
+    
+    // Reset piece tracking
+    pieceIdCounter = 0;
+    pieceElements.forEach(el => el.remove());
+    pieceElements.clear();
+    boardState = new Array(64).fill(null);
+    for(let i=0; i<64; i++) {
+        if(engine.board[i]) boardState[i] = { ...engine.board[i], id: `p-${pieceIdCounter++}` };
+    }
+
     capWhiteEl.innerText = ''; capBlackEl.innerText = '';
     document.getElementById('move-log').innerHTML = '';
     document.getElementById('status-msg').innerText = '';
     document.getElementById('game-over-modal').classList.remove('show');
     selectedSquare = null; legalMoves = engine.getLegalMoves();
     isAITurn = false;
-    if(isOnline && playerColor === 'w' && conn) { conn.send({ type: 'init', fen: START_FEN }); }
+    resetClocks();
+    if(isOnline && playerColor === 'w' && conn) { conn.send({ type: 'init', fen: engineToFen(), timers: timers }); }
     audio.playStart(); initRender(); resizeCanvas(); animateParticles();
+};
+
+// --- Camera Interaction ---
+const boardArea = document.getElementById('board-area');
+boardArea.onpointerdown = (e) => {
+    if(e.button !== 0 && e.pointerType === 'mouse') return;
+    isDraggingCamera = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    boardArea.setPointerCapture(e.pointerId);
+};
+boardArea.onpointermove = (e) => {
+    if(!isDraggingCamera) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    boardRotZ += dx * 0.5;
+    boardRotX -= dy * 0.5;
+    boardRotX = Math.max(0, Math.min(80, boardRotX));
+    startX = e.clientX;
+    startY = e.clientY;
+    document.documentElement.style.setProperty('--board-rot-x', `${boardRotX}deg`);
+    document.documentElement.style.setProperty('--board-rot-z', `${boardRotZ}deg`);
+};
+boardArea.onpointerup = (e) => {
+    isDraggingCamera = false;
+    boardArea.releasePointerCapture(e.pointerId);
 };
 
 window.onload = () => {
