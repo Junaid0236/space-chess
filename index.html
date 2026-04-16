@@ -252,12 +252,17 @@
 }
 
 body, html { 
-    margin: 0; padding: 0; height: 100%; 
+    margin: 0; padding: 0; height: 100vh; 
     font-family: 'Share Tech Mono', monospace; 
     background-color: var(--bg-color); 
     color: var(--text-color); 
     overflow: hidden; 
     transition: background-color 0.5s ease;
+}
+
+/* On mobile, allow scrolling */
+@media (max-width: 900px) {
+    body, html { height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; }
 }
 
 /* Background Effects */
@@ -282,11 +287,12 @@ body, html {
 @keyframes rotateNebula { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 /* Layout */
-#layout { display: flex; flex-direction: row; height: 100vh; width: 100vw; align-items: center; justify-content: center; }
-@media (max-width: 900px) { #layout { flex-direction: column; } }
+#layout { display: flex; flex-direction: row; height: 100vh; width: 100vw; align-items: stretch; justify-content: center; }
+@media (max-width: 900px) { #layout { flex-direction: column; height: auto; min-height: 100vh; } }
 
 /* Board Area */
-#board-area { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 1200px; position: relative; width: 100%; transition: all 0.5s ease; }
+#board-area { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 1200px; position: relative; width: 100%; transition: all 0.5s ease; z-index: 5; }
+@media (max-width: 900px) { #board-area { min-height: 60vh; padding: 40px 0; } }
 #board-container {
     position: relative; transform-style: preserve-3d; transform: rotateX(25deg);
     box-shadow: var(--board-shadow);
@@ -324,33 +330,36 @@ body, html {
 
 /* UI Sidebar */
 #sidebar {
-    width: 300px; padding: 20px; background: var(--panel-bg); border-left: 2px solid var(--glow-purple);
+    width: 320px; padding: 20px; background: var(--panel-bg); border-left: 2px solid var(--glow-purple);
     height: 100%; box-sizing: border-box; display: flex; flex-direction: column; z-index: 10;
     transition: background 0.5s ease, border-color 0.5s ease;
+    overflow-y: auto; overflow-x: hidden;
 }
-@media (max-width: 900px) { #sidebar { width: 100%; height: auto; border-left: none; border-top: 2px solid var(--glow-purple); } }
+@media (max-width: 900px) { #sidebar { width: 100%; height: auto; border-left: none; border-top: 2px solid var(--glow-purple); overflow-y: visible; } }
 
 h1 { 
-    font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 28px; margin-top: 0; 
+    font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 26px; margin: 0 0 20px 0; 
     color: var(--text-color); text-shadow: var(--h1-shadow); transition: text-shadow 0.5s ease, color 0.5s ease; 
+    text-align: center; border-bottom: 1px solid var(--glow-cyan); padding-bottom: 10px;
 }
 
-.info-box { margin-bottom: 15px; padding: 15px; background: var(--info-bg); border: 1px solid var(--glow-cyan); border-radius: 4px; transition: all 0.5s ease; }
-#status-turn { font-size: 1.2em; font-weight: bold; }
-#status-msg { color: var(--piece-black); font-weight: bold; min-height: 1.2em; margin-top: 5px; }
+.panel-label { font-size: 0.8em; color: var(--text-color); margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px; opacity: 0.8; font-weight: bold; }
+.info-box { margin-bottom: 15px; padding: 15px; background: var(--info-bg); border: 1px solid var(--glow-cyan); border-radius: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.5s ease; }
+#status-turn { font-size: 1.2em; font-weight: bold; text-align: center; }
+#status-msg { color: var(--piece-black); font-weight: bold; min-height: 1.2em; margin-top: 5px; text-align: center; text-transform: uppercase; }
 
-#move-log { flex: 1; overflow-y: auto; background: var(--info-bg); border: 1px solid var(--glow-purple); padding: 10px; margin-bottom: 20px; font-size: 0.9em; transition: all 0.5s ease; }
+#move-log { flex: 1; min-height: 100px; overflow-y: auto; background: var(--info-bg); border: 1px solid var(--glow-purple); border-radius: 6px; padding: 10px; margin-bottom: 15px; font-size: 0.9em; transition: all 0.5s ease; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
 .log-entry { margin-bottom: 5px; }
 
 button.action {
     font-family: 'Orbitron', sans-serif; background: transparent; color: var(--glow-cyan); border: 2px solid var(--glow-cyan);
-    padding: 10px 20px; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 12px 20px; font-size: 16px; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 6px; width: 100%; font-weight: bold;
 }
 button.action:hover { background: var(--glow-cyan); color: var(--btn-text); box-shadow: var(--btn-glow); }
 
 /* Modes */
-.mode-btn { flex: 1; font-size: 12px; padding: 8px; text-align: center; border-radius: 4px; background: transparent; color: var(--glow-cyan); border: 1px solid var(--glow-cyan); cursor: pointer; font-family: 'Orbitron', sans-serif; transition: all 0.3s ease; }
+.mode-btn { flex: 1; font-size: 11px; padding: 10px 5px; text-align: center; border-radius: 4px; background: rgba(0,0,0,0.3); color: var(--glow-cyan); border: 1px solid var(--glow-cyan); cursor: pointer; font-family: 'Orbitron', sans-serif; transition: all 0.3s ease; column-gap: 5px; }
 .mode-btn:hover { background: rgba(100, 100, 100, 0.2); }
 .mode-btn.active { background: var(--glow-purple); color: var(--btn-text); box-shadow: var(--btn-glow); border-color: var(--glow-purple); }
 
@@ -407,55 +416,63 @@ select { outline: none; }
     <div id="sidebar">
         <h1>Space Chess</h1>
         
-        <div style="margin-bottom: 20px; display: flex; gap: 5px;">
-            <button id="mode-hvsh" class="mode-btn active">PvP Local</button>
-            <button id="mode-hvsai" class="mode-btn">PvE (AI)</button>
-            <button id="mode-online" class="mode-btn">Online</button>
-        </div>
-        
-        <div id="ai-difficulty-container" style="display: none; margin-bottom: 10px;">
-            <label style="font-size: 0.8em; color: var(--text-color);">AI Difficulty:</label>
-            <select id="ai-difficulty" style="width: 100%; background: var(--info-bg); color: var(--text-color); border: 1px solid var(--glow-cyan); padding: 5px; margin-top: 5px; font-family: 'Share Tech Mono', monospace; cursor: pointer;">
-                <option value="1">Novice (Depth 1)</option>
-                <option value="2">Adept (Depth 2)</option>
-                <option value="3" selected>Master (Depth 3 + Alpha-Beta)</option>
-            </select>
-        </div>
+        <!-- Setup Panel -->
+        <div class="info-box">
+            <span class="panel-label">Game Mode</span>
+            <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                <button id="mode-hvsh" class="mode-btn active">PvP</button>
+                <button id="mode-hvsai" class="mode-btn">PvE (AI)</button>
+                <button id="mode-online" class="mode-btn">Online</button>
+            </div>
+            
+            <div id="ai-difficulty-container" style="display: none; margin-bottom: 15px;">
+                <span class="panel-label">AI Difficulty</span>
+                <select id="ai-difficulty" style="width: 100%; background: rgba(0,0,0,0.5); color: var(--text-color); border: 1px solid var(--glow-cyan); border-radius: 4px; padding: 8px; font-family: 'Share Tech Mono', monospace; cursor: pointer; outline: none;">
+                    <option value="1">Novice (Depth 1)</option>
+                    <option value="2">Adept (Depth 2)</option>
+                    <option value="3" selected>Master (Alpha-Beta)</option>
+                </select>
+            </div>
 
-        <div class="info-box" style="padding: 10px; margin-bottom: 15px;">
-            <label style="font-size: 0.8em; color: var(--text-color);">Theme Map:</label>
-            <optgroup label="Sci-Fi / Neon">
-                <select id="theme-selector" style="width: 100%; background: var(--info-bg); color: var(--text-color); border: 1px solid var(--glow-cyan); padding: 5px; margin-top: 5px; font-family: 'Share Tech Mono', monospace; cursor: pointer;">
-                    <option value="neon">Neon Space (Default)</option>
+            <span class="panel-label">Theme Map</span>
+            <select id="theme-selector" style="width: 100%; background: rgba(0,0,0,0.5); color: var(--text-color); border: 1px solid var(--glow-cyan); border-radius: 4px; padding: 8px; font-family: 'Share Tech Mono', monospace; cursor: pointer; outline: none;">
+                <optgroup label="Sci-Fi / Neon">
+                    <option value="neon">Neon Space</option>
                     <option value="cyberpunk">Cyberpunk Grid</option>
                     <option value="mars">Mars Dominion</option>
                     <option value="ocean">Deep Ocean</option>
                     <option value="solar">Solar Eclipse</option>
-                    <option value="classic_dark">Classic Dark (Clean)</option>
-                    <option value="light_mode">Light Mode (Clean)</option>
+                </optgroup>
+                <optgroup label="Classic / Clean">
+                    <option value="classic_dark">Classic Dark</option>
+                    <option value="light_mode">Light Mode</option>
                     <option value="wood">Traditional Wood</option>
                     <option value="emerald">Emerald Board</option>
                     <option value="monochrome">Monochrome</option>
-                </select>
-            </optgroup>
+                </optgroup>
+            </select>
         </div>
 
-        <div id="online-status" style="display:none; color: var(--glow-cyan); margin-bottom: 15px; font-size: 0.85em; word-break: break-all; padding: 10px; border: 1px solid var(--glow-purple); background: var(--info-bg);"></div>
+        <div id="online-status" style="display:none; color: var(--glow-cyan); margin-bottom: 15px; font-size: 0.85em; word-break: break-all; padding: 15px; border: 1px solid var(--glow-purple); border-radius: 6px; background: var(--info-bg); text-align: center;"></div>
 
+        <!-- Status Panel -->
         <div class="info-box">
             <div id="status-turn">Turn: White</div>
             <div id="status-msg"></div>
         </div>
         
-        <div class="info-box" style="padding: 10px;">
-            <div style="font-size: 0.8em; margin-bottom: 5px; color: var(--text-color); opacity: 0.7;">Captured:</div>
-            <div id="captured-white" style="color:var(--piece-white); font-size:1.5em; text-shadow:var(--piece-shadow-w); line-height:1; min-height: 1.5em;"></div>
-            <div id="captured-black" style="color:var(--piece-black); font-size:1.5em; text-shadow:var(--piece-shadow-b); line-height:1; min-height: 1.5em; margin-top:5px;"></div>
+        <div class="info-box" style="padding: 15px;">
+            <span class="panel-label" style="margin-bottom: 10px;">Captures</span>
+            <div style="background: rgba(0,0,0,0.3); border-radius: 4px; padding: 10px;">
+                <div id="captured-white" style="color:var(--piece-white); font-size:1.5em; text-shadow:var(--piece-shadow-w); line-height:1; min-height: 1.5em; letter-spacing: 2px;"></div>
+                <div style="margin: 5px 0; border-top: 1px dashed rgba(255,255,255,0.2);"></div>
+                <div id="captured-black" style="color:var(--piece-black); font-size:1.5em; text-shadow:var(--piece-shadow-b); line-height:1; min-height: 1.5em; letter-spacing: 2px;"></div>
+            </div>
         </div>
         
         <div id="move-log"></div>
         
-        <button id="new-game-btn" class="action">Initialize <br>(New Game)</button>
+        <button id="new-game-btn" class="action">Resign / New Game</button>
     </div>
 </div>
 
