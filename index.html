@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
+/* ================== NEON SCIFI THEMES ================== */
 :root, [data-theme="neon"] {
   --bg-color: #020010;
   --board-dark: #0d0221;
@@ -19,6 +20,14 @@
   --sq-size: clamp(35px, 8vmin, 70px);
   --piece-rot: none;
   --btn-text: #ffffff;
+  --piece-shadow-w: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px var(--glow-cyan);
+  --piece-shadow-b: 0 0 8px var(--piece-black), 0 0 15px var(--piece-black);
+  --board-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow-cyan);
+  --star-opacity: 1;
+  --panel-bg: rgba(0, 0, 0, 0.8);
+  --info-bg: rgba(0, 0, 0, 0.6);
+  --h1-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--glow-purple);
+  --btn-glow: 0 0 15px var(--glow-purple);
 }
 
 [data-theme="cyberpunk"] {
@@ -31,6 +40,14 @@
   --piece-black: #ff00ff;
   --text-color: #39ff14;
   --btn-text: #ffffff;
+  --piece-shadow-w: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px var(--glow-cyan);
+  --piece-shadow-b: 0 0 8px var(--piece-black), 0 0 15px var(--piece-black);
+  --board-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow-cyan);
+  --star-opacity: 1;
+  --panel-bg: rgba(1, 22, 3, 0.9);
+  --info-bg: rgba(0, 0, 0, 0.7);
+  --h1-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--glow-purple);
+  --btn-glow: 0 0 15px var(--glow-purple);
 }
 
 [data-theme="mars"] {
@@ -43,6 +60,14 @@
   --piece-black: #ff3333;
   --text-color: #ffba08;
   --btn-text: #ffffff;
+  --piece-shadow-w: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px var(--glow-cyan);
+  --piece-shadow-b: 0 0 8px var(--piece-black), 0 0 15px var(--piece-black);
+  --board-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow-cyan);
+  --star-opacity: 1;
+  --panel-bg: rgba(26, 5, 5, 0.9);
+  --info-bg: rgba(0, 0, 0, 0.6);
+  --h1-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--glow-purple);
+  --btn-glow: 0 0 15px var(--glow-purple);
 }
 
 [data-theme="ocean"] {
@@ -55,6 +80,14 @@
   --piece-black: #0055ff;
   --text-color: #00f5ff;
   --btn-text: #ffffff;
+  --piece-shadow-w: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px var(--glow-cyan);
+  --piece-shadow-b: 0 0 8px var(--piece-black), 0 0 15px var(--piece-black);
+  --board-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow-cyan);
+  --star-opacity: 1;
+  --panel-bg: rgba(0, 11, 24, 0.9);
+  --info-bg: rgba(0, 0, 0, 0.6);
+  --h1-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--glow-purple);
+  --btn-glow: 0 0 15px var(--glow-purple);
 }
 
 [data-theme="solar"] {
@@ -67,6 +100,115 @@
   --piece-black: #da1212;
   --text-color: #ffd700;
   --btn-text: #000000;
+  --piece-shadow-w: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px var(--glow-cyan);
+  --piece-shadow-b: 0 0 8px var(--piece-black), 0 0 15px var(--piece-black);
+  --board-shadow: 0 50px 100px rgba(0, 0, 0, 0.8), 0 0 40px var(--glow-cyan);
+  --star-opacity: 1;
+  --panel-bg: rgba(10, 10, 10, 0.9);
+  --info-bg: rgba(0, 0, 0, 0.6);
+  --h1-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--glow-purple);
+  --btn-glow: 0 0 15px var(--glow-purple);
+}
+
+/* ================== CLASSIC & TRADITIONAL THEMES ================== */
+[data-theme="classic_dark"] {
+  --bg-color: #121212;
+  --board-dark: #415a77;
+  --board-light: #e0e1dd;
+  --glow-cyan: #778da9;
+  --glow-purple: #415a77;
+  --piece-white: #ffffff;
+  --piece-black: #000000;
+  --text-color: #e0e1dd;
+  --btn-text: #ffffff;
+  --piece-shadow-w: 2px 2px 5px rgba(0,0,0,0.5);
+  --piece-shadow-b: 2px 2px 3px rgba(255,255,255,0.3);
+  --board-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  --star-opacity: 0;
+  --panel-bg: #1b263b;
+  --info-bg: #0d1b2a;
+  --h1-shadow: none;
+  --btn-glow: none;
+}
+
+[data-theme="light_mode"] {
+  --bg-color: #e9ecef;
+  --board-dark: #ced4da;
+  --board-light: #f8f9fa;
+  --glow-cyan: #495057;
+  --glow-purple: #adb5bd;
+  --piece-white: #ffffff;
+  --piece-black: #000000;
+  --text-color: #212529;
+  --btn-text: #000000;
+  --piece-shadow-w: 1px 1px 3px rgba(0,0,0,0.3);
+  --piece-shadow-b: 1px 1px 3px rgba(0,0,0,0.5);
+  --board-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  --star-opacity: 0;
+  --panel-bg: #f8f9fa;
+  --info-bg: #e9ecef;
+  --h1-shadow: none;
+  --btn-glow: none;
+}
+
+[data-theme="wood"] {
+  --bg-color: #1a0f05;
+  --board-dark: #b5651d;
+  --board-light: #f5d6a8;
+  --glow-cyan: #d08c4e;
+  --glow-purple: #5c3a21;
+  --piece-white: #ffffff;
+  --piece-black: #000000;
+  --text-color: #f5d6a8;
+  --btn-text: #ffffff;
+  --piece-shadow-w: 2px 2px 4px rgba(0,0,0,0.6);
+  --piece-shadow-b: 2px 2px 4px rgba(255,255,255,0.2);
+  --board-shadow: 0 30px 60px rgba(0,0,0,0.9);
+  --star-opacity: 0;
+  --panel-bg: #2c1a0c;
+  --info-bg: #1a0f05;
+  --h1-shadow: none;
+  --btn-glow: none;
+}
+
+[data-theme="emerald"] {
+  --bg-color: #1b2018;
+  --board-dark: #769656;
+  --board-light: #eeeed2;
+  --glow-cyan: #a9be9d;
+  --glow-purple: #465c34;
+  --piece-white: #ffffff;
+  --piece-black: #000000;
+  --text-color: #eeeed2;
+  --btn-text: #ffffff;
+  --piece-shadow-w: 2px 2px 4px rgba(0,0,0,0.6);
+  --piece-shadow-b: 2px 2px 4px rgba(255,255,255,0.2);
+  --board-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  --star-opacity: 0;
+  --panel-bg: #2c3e21;
+  --info-bg: #1b2018;
+  --h1-shadow: none;
+  --btn-glow: none;
+}
+
+[data-theme="monochrome"] {
+  --bg-color: #000000;
+  --board-dark: #888888;
+  --board-light: #ffffff;
+  --glow-cyan: #bbbbbb;
+  --glow-purple: #333333;
+  --piece-white: #ffffff;
+  --piece-black: #000000;
+  --text-color: #ffffff;
+  --btn-text: #ffffff;
+  --piece-shadow-w: 1px 1px 3px rgba(0,0,0,0.3);
+  --piece-shadow-b: 1px 1px 3px rgba(255,255,255,0.4);
+  --board-shadow: 0 20px 50px rgba(255,255,255,0.1);
+  --star-opacity: 0;
+  --panel-bg: #111111;
+  --info-bg: #000000;
+  --h1-shadow: none;
+  --btn-glow: none;
 }
 
 body, html { 
@@ -83,20 +225,17 @@ body, html {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     background: radial-gradient(circle at center, transparent 0%, #000 100%),
                 url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="50" r="1" fill="white" opacity="0.6"/><circle cx="150" cy="80" r="1" fill="white" opacity="0.5"/><circle cx="80" cy="120" r="1.5" fill="white" opacity="0.8"/><circle cx="120" cy="30" r="0.5" fill="white" opacity="0.4"/></svg>') repeat;
-    background-size: 200px 200px;
-    z-index: -2;
+    background-size: 200px 200px; z-index: -2;
     animation: panStars 120s linear infinite;
+    opacity: var(--star-opacity); transition: opacity 0.5s ease;
 }
 
 #nebula {
     position: fixed; top: -50%; left: -50%; width: 200vw; height: 200vh;
     background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 60%);
-    background-color: var(--glow-purple); /* blends */
-    opacity: 0.15;
-    z-index: -1;
-    animation: rotateNebula 60s linear infinite;
-    transform-origin: center;
-    mix-blend-mode: screen;
+    background-color: var(--glow-purple);
+    z-index: -1; animation: rotateNebula 60s linear infinite; transform-origin: center; mix-blend-mode: screen;
+    opacity: calc(var(--star-opacity) * 0.15); transition: opacity 0.5s ease;
 }
 
 @keyframes panStars { from { background-position: 0 0; } to { background-position: -1000px 1000px; } }
@@ -107,12 +246,12 @@ body, html {
 @media (max-width: 900px) { #layout { flex-direction: column; } }
 
 /* Board Area */
-#board-area { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 1200px; position: relative; width: 100%; }
+#board-area { flex: 1; display: flex; justify-content: center; align-items: center; perspective: 1200px; position: relative; width: 100%; transition: all 0.5s ease; }
 #board-container {
     position: relative; transform-style: preserve-3d; transform: rotateX(25deg);
-    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow-cyan);
+    box-shadow: var(--board-shadow);
     border: 3px solid var(--glow-cyan); border-radius: 4px; background: rgba(0, 0, 0, 0.5);
-    transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55), box-shadow 0.5s ease, border-color 0.5s ease;
 }
 
 #board { display: grid; grid-template-columns: repeat(8, var(--sq-size)); grid-template-rows: repeat(8, var(--sq-size)); width: calc(var(--sq-size) * 8); height: calc(var(--sq-size) * 8); }
@@ -121,9 +260,13 @@ body, html {
 .sq-light { background-color: var(--board-light); }
 
 /* Pieces */
-.piece { font-size: calc(var(--sq-size) * 0.7); cursor: pointer; user-select: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.5s, text-shadow 0.5s; z-index: 10; line-height: 1; transform: var(--piece-rot); }
-.piece.white { color: var(--piece-white); text-shadow: 0 0 8px rgba(255, 255, 255, 0.8), 0 0 15px var(--glow-cyan); }
-.piece.black { color: var(--piece-black); text-shadow: 0 0 8px var(--piece-black), 0 0 15px var(--piece-black); }
+.piece { 
+    font-size: calc(var(--sq-size) * 0.7); cursor: pointer; user-select: none; 
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.5s, text-shadow 0.5s; 
+    z-index: 10; line-height: 1; transform: var(--piece-rot); 
+}
+.piece.white { color: var(--piece-white); text-shadow: var(--piece-shadow-w); }
+.piece.black { color: var(--piece-black); text-shadow: var(--piece-shadow-b); }
 .piece.selected { transform: translateY(-8px) scale(1.15) var(--piece-rot); }
 
 /* Animations */
@@ -141,32 +284,35 @@ body, html {
 
 /* UI Sidebar */
 #sidebar {
-    width: 300px; padding: 20px; background: rgba(0, 0, 0, 0.8); border-left: 2px solid var(--glow-purple);
+    width: 300px; padding: 20px; background: var(--panel-bg); border-left: 2px solid var(--glow-purple);
     height: 100%; box-sizing: border-box; display: flex; flex-direction: column; z-index: 10;
-    transition: border-color 0.5s ease;
+    transition: background 0.5s ease, border-color 0.5s ease;
 }
 @media (max-width: 900px) { #sidebar { width: 100%; height: auto; border-left: none; border-top: 2px solid var(--glow-purple); } }
 
-h1 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 28px; margin-top: 0; color: #fff; text-shadow: 0 0 10px var(--glow-purple), 0 0 20px var(--glow-purple); transition: text-shadow 0.5s ease; }
+h1 { 
+    font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 28px; margin-top: 0; 
+    color: var(--text-color); text-shadow: var(--h1-shadow); transition: text-shadow 0.5s ease, color 0.5s ease; 
+}
 
-.info-box { margin-bottom: 15px; padding: 15px; background: rgba(0, 0, 0, 0.6); border: 1px solid var(--glow-cyan); border-radius: 4px; transition: border-color 0.5s ease; }
+.info-box { margin-bottom: 15px; padding: 15px; background: var(--info-bg); border: 1px solid var(--glow-cyan); border-radius: 4px; transition: all 0.5s ease; }
 #status-turn { font-size: 1.2em; font-weight: bold; }
 #status-msg { color: var(--piece-black); font-weight: bold; min-height: 1.2em; margin-top: 5px; }
 
-#move-log { flex: 1; overflow-y: auto; background: rgba(0,0,0,0.5); border: 1px solid var(--glow-purple); padding: 10px; margin-bottom: 20px; font-size: 0.9em; transition: border-color 0.5s ease; }
+#move-log { flex: 1; overflow-y: auto; background: var(--info-bg); border: 1px solid var(--glow-purple); padding: 10px; margin-bottom: 20px; font-size: 0.9em; transition: all 0.5s ease; }
 .log-entry { margin-bottom: 5px; }
 
 button.action {
     font-family: 'Orbitron', sans-serif; background: transparent; color: var(--glow-cyan); border: 2px solid var(--glow-cyan);
     padding: 10px 20px; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: all 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-button.action:hover { background: var(--glow-cyan); color: #000; box-shadow: 0 0 20px var(--glow-cyan); }
+button.action:hover { background: var(--glow-cyan); color: var(--btn-text); box-shadow: var(--btn-glow); }
 
 /* Modes */
 .mode-btn { flex: 1; font-size: 12px; padding: 8px; text-align: center; border-radius: 4px; background: transparent; color: var(--glow-cyan); border: 1px solid var(--glow-cyan); cursor: pointer; font-family: 'Orbitron', sans-serif; transition: all 0.3s ease; }
-.mode-btn:hover { background: rgba(0, 229, 255, 0.2); }
-.mode-btn.active { background: var(--glow-purple); color: var(--btn-text); box-shadow: 0 0 15px var(--glow-purple); border-color: var(--glow-purple); }
+.mode-btn:hover { background: rgba(100, 100, 100, 0.2); }
+.mode-btn.active { background: var(--glow-purple); color: var(--btn-text); box-shadow: var(--btn-glow); border-color: var(--glow-purple); }
 
 /* Overlays */
 #particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20; }
@@ -181,16 +327,16 @@ button.action:hover { background: var(--glow-cyan); color: #000; box-shadow: 0 0
 .modal-overlay.show { opacity: 1; pointer-events: all; }
 
 .modal-content {
-    background: rgba(10, 10, 10, 0.95);
+    background: var(--panel-bg);
     border: 2px solid var(--glow-cyan);
     padding: 40px; border-radius: 8px;
-    text-align: center; box-shadow: 0 0 50px var(--glow-purple);
+    text-align: center; box-shadow: var(--board-shadow);
     font-family: 'Orbitron', sans-serif;
     transform: scale(0.8); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .modal-overlay.show .modal-content { transform: scale(1); }
 
-#result-title { font-size: 3em; margin: 0 0 10px 0; color: #fff; text-shadow: 0 0 20px var(--glow-purple); }
+#result-title { font-size: 3em; margin: 0 0 10px 0; color: var(--text-color); text-shadow: var(--h1-shadow); }
 #result-desc { font-size: 1.5em; margin: 0 0 30px 0; color: var(--glow-cyan); font-family: 'Share Tech Mono', monospace; }
 
 .glitch-anim { animation: glitchText 1s infinite; }
@@ -204,7 +350,6 @@ button.action:hover { background: var(--glow-cyan); color: #000; box-shadow: 0 0
 }
 
 select { outline: none; }
-</select>
 </style>
 </head>
 <body data-theme="neon">
@@ -229,8 +374,8 @@ select { outline: none; }
         </div>
         
         <div id="ai-difficulty-container" style="display: none; margin-bottom: 10px;">
-            <label style="font-size: 0.8em; color: var(--glow-cyan);">AI Difficulty:</label>
-            <select id="ai-difficulty" style="width: 100%; background: #000; color: #fff; border: 1px solid var(--glow-cyan); padding: 5px; margin-top: 5px; font-family: 'Share Tech Mono', monospace; cursor: pointer;">
+            <label style="font-size: 0.8em; color: var(--text-color);">AI Difficulty:</label>
+            <select id="ai-difficulty" style="width: 100%; background: var(--info-bg); color: var(--text-color); border: 1px solid var(--glow-cyan); padding: 5px; margin-top: 5px; font-family: 'Share Tech Mono', monospace; cursor: pointer;">
                 <option value="1">Novice (Depth 1)</option>
                 <option value="2">Adept (Depth 2)</option>
                 <option value="3" selected>Master (Depth 3 + Alpha-Beta)</option>
@@ -238,17 +383,24 @@ select { outline: none; }
         </div>
 
         <div class="info-box" style="padding: 10px; margin-bottom: 15px;">
-            <label style="font-size: 0.8em; color: var(--glow-cyan);">Theme Map:</label>
-            <select id="theme-selector" style="width: 100%; background: #000; color: #fff; border: 1px solid var(--glow-cyan); padding: 5px; margin-top: 5px; font-family: 'Share Tech Mono', monospace; cursor: pointer;">
-                <option value="neon">Neon Space (Default)</option>
-                <option value="cyberpunk">Cyberpunk Grid</option>
-                <option value="mars">Mars Dominion</option>
-                <option value="ocean">Deep Ocean</option>
-                <option value="solar">Solar Eclipse</option>
-            </select>
+            <label style="font-size: 0.8em; color: var(--text-color);">Theme Map:</label>
+            <optgroup label="Sci-Fi / Neon">
+                <select id="theme-selector" style="width: 100%; background: var(--info-bg); color: var(--text-color); border: 1px solid var(--glow-cyan); padding: 5px; margin-top: 5px; font-family: 'Share Tech Mono', monospace; cursor: pointer;">
+                    <option value="neon">Neon Space (Default)</option>
+                    <option value="cyberpunk">Cyberpunk Grid</option>
+                    <option value="mars">Mars Dominion</option>
+                    <option value="ocean">Deep Ocean</option>
+                    <option value="solar">Solar Eclipse</option>
+                    <option value="classic_dark">Classic Dark (Clean)</option>
+                    <option value="light_mode">Light Mode (Clean)</option>
+                    <option value="wood">Traditional Wood</option>
+                    <option value="emerald">Emerald Board</option>
+                    <option value="monochrome">Monochrome</option>
+                </select>
+            </optgroup>
         </div>
 
-        <div id="online-status" style="display:none; color: var(--glow-cyan); margin-bottom: 15px; font-size: 0.85em; word-break: break-all; padding: 10px; border: 1px solid var(--glow-purple); background: rgba(255,255,255,0.05);"></div>
+        <div id="online-status" style="display:none; color: var(--glow-cyan); margin-bottom: 15px; font-size: 0.85em; word-break: break-all; padding: 10px; border: 1px solid var(--glow-purple); background: var(--info-bg);"></div>
 
         <div class="info-box">
             <div id="status-turn">Turn: White</div>
@@ -256,14 +408,14 @@ select { outline: none; }
         </div>
         
         <div class="info-box" style="padding: 10px;">
-            <div style="font-size: 0.8em; margin-bottom: 5px; color: #888;">Captured:</div>
-            <div id="captured-white" style="color:var(--piece-white); font-size:1.5em; text-shadow:0 0 5px #fff; line-height:1; min-height: 1.5em;"></div>
-            <div id="captured-black" style="color:var(--piece-black); font-size:1.5em; line-height:1; min-height: 1.5em; margin-top:5px;"></div>
+            <div style="font-size: 0.8em; margin-bottom: 5px; color: var(--text-color); opacity: 0.7;">Captured:</div>
+            <div id="captured-white" style="color:var(--piece-white); font-size:1.5em; text-shadow:var(--piece-shadow-w); line-height:1; min-height: 1.5em;"></div>
+            <div id="captured-black" style="color:var(--piece-black); font-size:1.5em; text-shadow:var(--piece-shadow-b); line-height:1; min-height: 1.5em; margin-top:5px;"></div>
         </div>
         
         <div id="move-log"></div>
         
-        <button id="new-game-btn" class="action">Initialize Warp <br>(New Game)</button>
+        <button id="new-game-btn" class="action">Initialize <br>(New Game)</button>
     </div>
 </div>
 
@@ -530,7 +682,7 @@ function hostOnlineMatch() {
     const roomId = generateRoomId(); peer = new Peer(roomId);
     peer.on('open', (id) => {
         const link = window.location.href.split('?')[0] + '?room=' + id;
-        statusEl.innerHTML = `WAITING FOR OPPONENT.<br>Share link:<br><a href="${link}" style="color:#fff;" target="_blank">${link}</a>`;
+        statusEl.innerHTML = `WAITING FOR OPPONENT.<br>Share link:<br><a href="${link}" style="color:inherit;" target="_blank">${link}</a>`;
     });
     peer.on('connection', (c) => {
         conn = c; setupConnectionCallbacks();
@@ -722,7 +874,7 @@ function logMove(san) {
     const log = document.getElementById('move-log');
     if(engine.turn === 'b') { 
         const entry = document.createElement('div'); entry.className = 'log-entry'; engine.fullMoves++;
-        entry.innerHTML = `<span style="color:var(--glow-purple)">${engine.fullMoves}.</span> <span style="color:var(--glow-cyan)">${san}</span> <span id="black-mv-${engine.fullMoves}"></span>`;
+        entry.innerHTML = `<span style="color:var(--text-color); opacity: 0.7;">${engine.fullMoves}.</span> <span style="color:var(--glow-cyan)">${san}</span> <span id="black-mv-${engine.fullMoves}"></span>`;
         log.appendChild(entry);
     } else {
         const el = document.getElementById(`black-mv-${engine.fullMoves}`);
